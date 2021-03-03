@@ -1,5 +1,3 @@
-# TEMPLATE-APP: This is set as a reasonable default, feel free to change.
-
 {{/* vim: set filetype=mustache: */}}
 {{/*
 Expand the name of the chart.
@@ -26,6 +24,8 @@ app.giantswarm.io/branch: {{ .Values.project.branch | replace "#" "-" | replace 
 app.giantswarm.io/commit: {{ .Values.project.commit | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+cluster.x-k8s.io/provider: vsphere
+component: cloud-controller-manager
 helm.sh/chart: {{ include "chart" . | quote }}
 giantswarm.io/service-type: {{ .Values.serviceType }}
 {{- end -}}

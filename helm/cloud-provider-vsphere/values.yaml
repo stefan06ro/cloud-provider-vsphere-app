@@ -1,0 +1,63 @@
+name: cloud-provider-vsphere
+namespace: kube-system
+serviceType: managed
+
+project:
+  branch: "[[ .Branch ]]"
+  commit: "[[ .SHA ]]"
+
+config:
+  vcenter: "vcenter.local"
+  username: "user"
+  password: "pass"
+  datacenter: "dc"
+
+## Specify if a Pod Security Policy for kube-state-metrics must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  annotations: {}
+    # Specify pod annotations
+    # Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    # Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    # Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    #
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
+# Run containers to have security context. Default is 'nobody' (65534/65534) in distroless
+securityContext:
+  runAsUser: 1001
+  fsGroup: 1001
+
+daemonset:
+  annotations: {}
+  image:
+    registry: gcr.io
+    name: cloud-provider-vsphere/cpi/release/manager
+    tag: v1.19.0
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  replicaCount: 1
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #    cpu: 256m
+    #    memory: 128Mi
+  podAnnotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  ## Allows for the default selector to be replaced with user-defined ones
+  nodeSelector: {}
+  ## Allows for the default tolerations to be replaced with user-defined ones
+  tolerations: []
+
+service:
+  annotations: {}
+  # endpointPort: externally accessible port for UI and API
+  endpointPort: 43001
+  # targetPort: the internal port the UI and API are exposed on
+  targetPort: 43001

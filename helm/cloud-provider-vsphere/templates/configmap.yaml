@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    vsphere-cpi-infra: config
+    {{- include "labels.common" . | nindent 4 }}
+  name: {{ include "resource.default.name" . }}-vsphere-cloud-config
+  namespace: {{ include "resource.default.namespace" . }}
+data:
+  vsphere.conf: |
+    # Global properties in this section will be used for all specified vCenters unless overriden in VirtualCenter section.
+    global:
+      port: 443
+      # set insecure-flag to true if the vCenter uses a self-signed cert
+      insecureFlag: true
+      # settings for using k8s secret
+      secretName: {{ include "resource.default.name" . }}-vsphere-cloud-secret
+      secretNamespace: {{ include "resource.default.namespace" . }}
+
+    # VirtualCenter section
+    vcenter:
+      {{ .Release.Name }}:
+        server: {{ .Values.config.vcenter }}
+        datacenters:
+          - {{ .Values.config.datacenter }}

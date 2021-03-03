@@ -1,0 +1,7 @@
+apiVersion: v2
+appVersion: "v1.19.0"
+description: A Helm chart for cloud provider vsphere
+engine: gotpl
+home: https://github.com/giantswarm/cloud-provider-vsphere-app
+name: cloud-provider-vsphere
+version: [[ .Version ]]

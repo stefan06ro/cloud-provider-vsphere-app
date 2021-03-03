@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if .Values.service.annotations }}
+  annotations:
+  {{- toYaml .Values.service.annotations | indent 4 }}
+  {{- end }}
+  labels:
+    giantswarm.io/monitoring: "true"
+    {{- include "labels.common" . | nindent 4 }}
+  name: {{ include "resource.default.name" . }}-controller-manager-metrics-service
+  namespace: {{ include "resource.default.namespace" . }}
+spec:
+  ports:
+  - name: cpi-api
+    port: {{ .Values.service.endpointPort }}
+    protocol: TCP
+    targetPort: {{ .Values.service.targetPort }}
+  selector:
+    {{- include "labels.selector" . | nindent 6 }}

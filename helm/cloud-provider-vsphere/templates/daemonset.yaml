@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    tier: control-plane
+    {{- include "labels.common" . | nindent 4 }}
+  name: {{ include "resource.default.name" . }}-vsphere-cloud-controller-manager
+  namespace: {{ include "resource.default.namespace" . }}
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+    {{- if .Values.daemonset.annotations }}
+    {{- toYaml .Values.daemonset.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "labels.selector" . | nindent 6 }}
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      {{- if .Values.daemonset.podAnnotations }}
+      annotations:
+      {{- toYaml .Values.daemonset.podAnnotations | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "labels.common" . | nindent 8 }}
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      tolerations:
+        - key: node.cloudprovider.kubernetes.io/uninitialized
+          value: "true"
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+          operator: Exists
+        - key: node.kubernetes.io/not-ready
+          effect: NoSchedule
+          operator: Exists
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      serviceAccountName: {{ include "resource.default.name" . }}
+      hostNetwork: true
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
+      containers:
+        - name: vsphere-cloud-controller-manager
+          image: "{{ .Values.daemonset.image.registry }}/{{ .Values.daemonset.image.name }}:{{ .Values.daemonset.image.tag }}"
+          args:
+            - --cloud-provider=vsphere
+            - --v=2
+            - --cloud-config=/etc/cloud/vsphere.conf
+          ports:
+          - containerPort: {{ .Values.service.endpointPort }}
+            protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/cloud
+              name: vsphere-config-volume
+              readOnly: true
+          {{- if .Values.daemonset.resources }}
+          resources:
+          {{- toYaml .Values.daemonset.resources | nindent 10 }}
+          {{- end }}
+      volumes:
+        - name: vsphere-config-volume
+          configMap:
+            name: {{ include "resource.default.name" . }}-vsphere-cloud-config
