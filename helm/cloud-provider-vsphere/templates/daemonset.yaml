@@ -56,37 +56,37 @@ spec:
       hostNetwork: true
       dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
       containers:
-        - name: vpshere-cpi
-          image: "{{ .Values.daemonset.image.registry }}/{{ .Values.daemonset.image.name }}:{{ .Values.daemonset.image.tag }}"
-          args:
-          - --cloud-provider=vsphere
-          - --v={{ .Values.daemonset.cmdline.logging }}
-          - --cloud-config={{ .Values.daemonset.cmdline.cloudConfig.dir }}/{{ .Values.daemonset.cmdline.cloudConfig.file }}
-          {{- range $key, $value := .Values.daemonset.cmdline.additionalParams }}
-          - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
-          {{- end }}
-          {{- if .Values.service.enabled }}
-          env:
-          - name: VSPHERE_API_DISABLE
-            value: "false"
-          - name: VSPHERE_API_BINDING
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "resource.default.name" . }}
-                key: api.binding
-          ports:
-          - containerPort: {{ .Values.service.endpointPort }}
-            protocol: TCP
-          {{- end }}
-          volumeMounts:
-          - mountPath: {{ .Values.daemonset.cmdline.cloudConfig.dir }}
-            name: vsphere-config-volume
-            readOnly: true
-          {{- if .Values.daemonset.resources }}
-          resources:
-          {{- toYaml .Values.daemonset.resources | nindent 10 }}
-          {{- end }}
+      - name: vpshere-cpi
+        image: "{{ .Values.daemonset.image.registry }}/{{ .Values.daemonset.image.name }}:{{ .Values.daemonset.image.tag }}"
+        args:
+        - --cloud-provider=vsphere
+        - --v={{ .Values.daemonset.cmdline.logging }}
+        - --cloud-config={{ .Values.daemonset.cmdline.cloudConfig.dir }}/{{ .Values.daemonset.cmdline.cloudConfig.file }}
+        {{- range $key, $value := .Values.daemonset.cmdline.additionalParams }}
+        - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
+        {{- end }}
+        {{- if .Values.service.enabled }}
+        env:
+        - name: VSPHERE_API_DISABLE
+          value: "false"
+        - name: VSPHERE_API_BINDING
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "resource.default.name" . }}
+              key: api.binding
+        ports:
+        - containerPort: {{ .Values.service.endpointPort }}
+          protocol: TCP
+        {{- end }}
+        volumeMounts:
+        - mountPath: {{ .Values.daemonset.cmdline.cloudConfig.dir }}
+          name: vsphere-config-volume
+          readOnly: true
+        {{- if .Values.daemonset.resources }}
+        resources:
+        {{- toYaml .Values.daemonset.resources | nindent 10 }}
+        {{- end }}
       volumes:
-        - name: vsphere-config-volume
-          configMap:
-            name: {{ include "resource.default.name" . }}-cloud-config
+      - name: vsphere-config-volume
+        configMap:
+          name: {{ include "resource.default.name" . }}-cloud-config
