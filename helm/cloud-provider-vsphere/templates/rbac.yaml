@@ -1,3 +1,4 @@
+{{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -7,6 +8,8 @@ metadata:
   name: {{ include "resource.default.name" . }}-servicecatalog.k8s.io:apiserver-authentication-reader
   namespace: {{ include "resource.default.namespace" . }}
 roleRef:
+  # This is a default Kubernetes role used to create extension api servers
+  # (cf. See https://kubernetes.io/docs/tasks/extend-kubernetes/setup-extension-api-server/)
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: extension-apiserver-authentication-reader
@@ -117,3 +120,4 @@ rules:
   - get
   - list
   - watch
+{{- end -}}

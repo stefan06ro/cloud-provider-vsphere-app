@@ -1,3 +1,4 @@
+{{- if .Values.service.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,8 +8,9 @@ metadata:
   {{- end }}
   labels:
     giantswarm.io/monitoring: "true"
+    vsphere-cpi-infra: service
     {{- include "labels.common" . | nindent 4 }}
-  name: {{ include "resource.default.name" . }}-controller-manager-metrics-service
+  name: {{ include "resource.default.name" . }}
   namespace: {{ include "resource.default.namespace" . }}
 spec:
   ports:
@@ -18,3 +20,6 @@ spec:
     targetPort: {{ .Values.service.targetPort }}
   selector:
     {{- include "labels.selector" . | nindent 6 }}
+  type: {{ .Values.service.type }}
+{{- template "loadBalancerSourceRanges" .Values }}
+{{- end -}}

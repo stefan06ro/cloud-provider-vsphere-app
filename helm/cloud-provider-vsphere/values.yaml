@@ -15,6 +15,7 @@ config:
 ## Specify if a Pod Security Policy for kube-state-metrics must be created
 ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
 podSecurityPolicy:
+  enabled: true
   annotations: {}
     # Specify pod annotations
     # Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
@@ -27,17 +28,31 @@ podSecurityPolicy:
 
 # Run containers to have security context. Default is 'nobody' (65534/65534) in distroless
 securityContext:
+  enabled: true
   runAsUser: 1001
   fsGroup: 1001
 
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+
 daemonset:
   annotations: {}
-  image:
-    registry: gcr.io
-    name: cloud-provider-vsphere/cpi/release/manager
-    tag: v1.19.0
+  image: gcr.io/cloud-provider-vsphere/cpi/release/manager
+  tag: v1.19.0
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
+  cmdline:
+    logging: 2
+    # Location of the cloud configmap to be mounted on the filesystem
+    cloudConfig:
+      dir: "/etc/cloud"
+      file: "vsphere.conf"
+    additionalParams: {}
   replicaCount: 1
   resources: {}
     # limits:
@@ -56,8 +71,27 @@ daemonset:
   tolerations: []
 
 service:
+  enabled: true
   annotations: {}
+  type: ClusterIP
+  # List of IP ranges that are allowed to access the load balancer (if supported)
+  loadBalancerSourceRanges: []
   # endpointPort: externally accessible port for UI and API
   endpointPort: 43001
   # targetPort: the internal port the UI and API are exposed on
   targetPort: 43001
+
+ingress:
+  enabled: false
+  annotations: {}
+  # Used to create an Ingress record.
+  # hosts:
+  #   - chart-example.local
+  # annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local

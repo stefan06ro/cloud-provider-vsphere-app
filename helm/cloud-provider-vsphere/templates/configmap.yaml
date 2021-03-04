@@ -4,7 +4,7 @@ metadata:
   labels:
     vsphere-cpi-infra: config
     {{- include "labels.common" . | nindent 4 }}
-  name: {{ include "resource.default.name" . }}-vsphere-cloud-config
+  name: {{ include "resource.default.name" . }}-cloud-config
   namespace: {{ include "resource.default.namespace" . }}
 data:
   vsphere.conf: |
@@ -14,7 +14,7 @@ data:
       # set insecure-flag to true if the vCenter uses a self-signed cert
       insecureFlag: true
       # settings for using k8s secret
-      secretName: {{ include "resource.default.name" . }}-vsphere-cloud-secret
+      secretName: {{ include "resource.default.name" . }}-cloud-secret
       secretNamespace: {{ include "resource.default.namespace" . }}
 
     # VirtualCenter section

@@ -3,5 +3,13 @@ appVersion: "v1.19.0"
 description: A Helm chart for cloud provider vsphere
 engine: gotpl
 home: https://github.com/giantswarm/cloud-provider-vsphere-app
+icon: https://raw.githubusercontent.com/kubernetes/cloud-provider-vsphere/master/docs/vmware_logo.png
+keywords:
+  - vsphere
+  - vmware
+  - cloud
+  - provider
 name: cloud-provider-vsphere
+sources:
+  - https://github.com/kubernetes/cloud-provider-vsphere
 version: [[ .Version ]]

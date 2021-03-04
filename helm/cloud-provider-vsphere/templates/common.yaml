@@ -1,10 +1,10 @@
-{{- if .Values.serviceAccount.create -}}
 apiVersion: v1
-kind: ServiceAccount
+kind: ConfigMap
 metadata:
   labels:
-    vsphere-cpi-infra: service-account
+    vsphere-cpi-infra:  common-configmap
     {{- include "labels.common" . | nindent 4 }}
   name: {{ include "resource.default.name" . }}
   namespace: {{ include "resource.default.namespace" . }}
-{{- end -}}
+data:
+  api.binding: "{{ template "api.binding" . }}"
