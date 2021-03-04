@@ -57,7 +57,7 @@ spec:
       dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
       containers:
         - name: vpshere-cpi
-          image: "{{ .Values.daemonset.image }}:{{ .Values.daemonset.tag }}"
+          image: "{{ .Values.daemonset.image.registry }}/{{ .Values.daemonset.image.name }}:{{ .Values.daemonset.image.tag }}"
           args:
           - --cloud-provider=vsphere
           - --v={{ .Values.daemonset.cmdline.logging }}

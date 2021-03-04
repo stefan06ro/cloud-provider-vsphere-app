@@ -42,8 +42,10 @@ serviceAccount:
 
 daemonset:
   annotations: {}
-  image: gcr.io/cloud-provider-vsphere/cpi/release/manager
-  tag: v1.19.0
+  image:
+    registry: gcr.io
+    name: cloud-provider-vsphere/cpi/release/manager
+    tag: v1.19.0
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdline:

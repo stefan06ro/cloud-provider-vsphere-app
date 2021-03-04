@@ -71,9 +71,9 @@ The following table lists the configurable parameters of the vSphere CPI chart a
 | `podSecurityPolicy.enabled`              | Enable pod sec policy (k8s > 1.17)  |  true                                  |
 | `podSecurityPolicy.annotations`          | Annotations for pd sec policy       |  nil                                   |
 | `securityContext.enabled`                | Enable sec context for container    |  false                                 |
-| `securityContext.runAsUser`              | RunAsUser. Default is `nobody` in   |  1001                                 |
+| `securityContext.runAsUser`              | RunAsUser. Default is `nobody` in   |  1001                                  |
 |                                          |    distroless image                 |                                        |
-| `securityContext.fsGroup`                | FsGroup. Default is `nobody` in     |  1001                                 |
+| `securityContext.fsGroup`                | FsGroup. Default is `nobody` in     |  1001                                  |
 |                                          |    distroless image                 |                                        |
 | `config.enabled`                         | Create a simple single VC config    |  false                                 |
 | `config.vcenter`                         | FQDN or IP of vCenter               |  vcenter.local                         |
@@ -84,9 +84,10 @@ The following table lists the configurable parameters of the vSphere CPI chart a
 | `serviceAccount.create`                  | Create the service account          |  true                                  |
 | `serviceAccount.name`                    | Name of the created service account |  cloud-controller-manager              |
 | `daemonset.annotations`                  | Annotations for CPI pod             |  nil                                   |
-| `daemonset.image`                        | Image for vSphere CPI               |  gcr.io/cloud-provider-vsphere/        |
+| `daemonset.image.registry`               | Image for vSphere CPI               |  gcr.io |
+| `daemonset.image.name`                   | Image for vSphere CPI               |  cloud-provider-vsphere/               |
 |                                          |                                     |       vsphere-cloud-controller-manager |
-| `daemonset.tag`                          | Tag for vSphere CPI                 |  latest                                |
+| `daemonset.image.tag`                    | Tag for vSphere CPI                 |  latest                                |
 | `daemonset.pullPolicy`                   | CPI image pullPolicy                |  IfNotPresent                          |
 | `daemonset.dnsPolicy`                    | CPI dnsPolicy                       |  ClusterFirst                          |
 | `daemonset.cmdline.logging`              | Logging level                       |  2                                     |
